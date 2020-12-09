@@ -10,5 +10,5 @@ setup(
     license='Apache2',
     author='jarbasAI',
     author_email='jarbasai@mailfence.com',
-    description='Implementation of RAKE - Rapid Automtic Keyword Exraction algorithm'
+    description='Implementation of RAKE - Rapid Automatic Keyword Extraction'
 )

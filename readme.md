@@ -1,6 +1,6 @@
 # RAKEkeywords
 
-Implementation of RAKE - Rapid Automatic Keyword Exraction algorithm as described in:
+Implementation of RAKE - Rapid Automatic Keyword Extraction algorithm as described in:
  
      Rose, S., D. Engel, N. Cramer, and W. Cowley (2010).
      Automatic keyword extraction from indi-vidual documents.
