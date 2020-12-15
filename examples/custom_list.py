@@ -1,8 +1,9 @@
 from RAKEkeywords import Rake
 from pprint import pprint
+from os.path import join, dirname
 
-rake = Rake()
-
+my_list = join(dirname(__file__), "stopwords", "en", "FoxStoplist.txt")
+rake = Rake(stop_words_path=my_list)
 
 for t in [
     "Compatibility of systems of linear constraints over the set of natural "

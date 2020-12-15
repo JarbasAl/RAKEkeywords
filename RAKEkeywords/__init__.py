@@ -1,15 +1,24 @@
 import re
 import operator
-from os.path import join, dirname, isfile
+import stopwordsiso
 
 
 class Rake:
-    def __init__(self, stop_words_path="FoxStoplist.txt", lang="en-us"):
-        if not isfile(stop_words_path):
-            stop_words_path = join(dirname(__file__), "res", lang,
-                                   stop_words_path)
-        self.stop_words_path = stop_words_path
-        self.__stop_words_pattern = self.build_stop_word_regex(stop_words_path)
+    def __init__(self, lang="en", stop_words_path=None):
+        if stop_words_path:
+            self.__stop_words_pattern = self.build_stop_word_regex_from_file(
+                stop_words_path)
+        else:
+            stoplist = stopwordsiso.stopwords(lang)
+            if not stopwordsiso.has_lang(lang):
+                lang2 = lang.split("-")[0].lower()
+                if not stopwordsiso.has_lang(lang2):
+                    raise ValueError("No bundled stopword list available for {lang}, "
+                                     "initialize Rake with stop_words_path "
+                                     "argument".format(lang=lang))
+                stoplist = stopwordsiso.stopwords(lang2)
+
+            self.__stop_words_pattern = self.build_stop_word_regex(stoplist)
 
     @staticmethod
     def generate_candidate_keyword_scores(phrase_list, word_score):
@@ -103,8 +112,7 @@ class Rake:
         return sentences
 
     @staticmethod
-    def build_stop_word_regex(stop_word_file_path):
-        stop_word_list = Rake.load_stop_words(stop_word_file_path)
+    def build_stop_word_regex(stop_word_list):
         stop_word_regex_list = []
         for word in stop_word_list:
             word_regex = r'\b' + word + r'(?![\w-])'  # added look ahead for hyphen
@@ -112,6 +120,11 @@ class Rake:
         stop_word_pattern = re.compile('|'.join(stop_word_regex_list),
                                        re.IGNORECASE)
         return stop_word_pattern
+
+    @staticmethod
+    def build_stop_word_regex_from_file(stop_word_file_path):
+        stop_word_list = Rake.load_stop_words(stop_word_file_path)
+        return Rake.build_stop_word_regex(stop_word_list)
 
     @staticmethod
     def generate_candidate_keywords(sentence_list, stopword_pattern):
